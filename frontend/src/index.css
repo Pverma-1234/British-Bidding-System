@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #111827;
+  background-color: #F9FAFB;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #F9FAFB;
+}
+
+#root {
+  width: 100%;
+}
+
+/* NProgress Customization */
+#nprogress .bar {
+  background: #4F46E5 !important;
+  height: 3px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #4F46E5, 0 0 5px #4F46E5 !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #4F46E5 !important;
+  border-left-color: #4F46E5 !important;
+}
