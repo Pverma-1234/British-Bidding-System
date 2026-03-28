@@ -12,6 +12,16 @@ const rfqSchema = new mongoose.Schema({
         enum: ['ANY_BID', 'RANK_CHANGE', 'L1_CHANGE'],
         required: true
     },
+    // 🆕 Track extensions
+    extensionCount: {
+        type: Number,
+        default: 0
+    },
+
+    // 🆕 Track last extension time
+    lastExtendedAt: {
+        type: Date
+    },
     status: {
         type: String,
         enum: ['DRAFT', 'ACTIVE', 'CLOSED'],
