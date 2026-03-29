@@ -4,10 +4,8 @@ A high-performance, real-time bidding platform designed to strictly facilitate a
 
 ## 🔗 Live Demo
 
-- **🌐 Frontend Live URL**: [https://your-frontend-domain.com](https://your-frontend-domain.com) 
-*(Note: Replace with actual deployed URL)*
-- **⚙️ Backend API URL**: [https://your-backend-api.com](https://your-backend-api.com) 
-*(Note: Replace with actual deployed API URL)*
+- **🌐 Frontend Live URL**: [https://british-bidding-system.vercel.app]
+
 
 ## ✨ Features
 
@@ -88,13 +86,7 @@ A high-performance, real-time bidding platform designed to strictly facilitate a
    ┃ ┗ 📜 App.jsx       # Component router implementation
 ```
 
-## 📸 Screenshots *(Optional)*
 
-> Insert your placeholder images or GIFs of the auction dashboard, real-time bid updates, and theme capabilities here.
-> 
-> *Examples:*
-> - `![Buyer Dashboard](./screenshots/dashboard.png)`
-> - `![Live Bidding Event](./screenshots/live-bid.gif)`
 
 ## 🔮 Future Improvements
 
