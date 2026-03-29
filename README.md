@@ -4,7 +4,7 @@ A high-performance, real-time bidding platform designed to strictly facilitate a
 
 ## 🔗 Live Demo
 
-- **🌐 Frontend Live URL**: [https://british-bidding-system.vercel.app]
+- **🌐 Live URL**: [https://british-bidding-system.vercel.app]
 
 
 ## ✨ Features
@@ -36,8 +36,8 @@ A high-performance, real-time bidding platform designed to strictly facilitate a
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/repo-name.git
-   cd repo-name
+   git clone https://github.com/Pverma-1234/British-Bidding-System
+   cd RFQ
    ```
 
 2. **Backend Setup:**
@@ -92,7 +92,7 @@ A high-performance, real-time bidding platform designed to strictly facilitate a
 
 - Add email/SMS notifications specifically tied to WebSocket events to alert offline bidders.
 - Add PDF Generation for printing official Purchase Orders when an RFQ is awarded.
-- Enhance the analytics dashboard with interactive interactive charts mapping bid frequency over time.
+- Enhance the analytics dashboard with interactive charts mapping bid frequency over time.
 - Implement an audit log export (CSV) feature for prolonged compliance tracking.
 
 ## 👨‍💻 Author
