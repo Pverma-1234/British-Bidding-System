@@ -38,7 +38,7 @@ const CreateRFQ = () => {
       setError("End Time must be after Start Time.");
       return;
     }
-    
+
     if (start >= forcedClose) {
       setError("Max End Time must be after Start Time.");
       return;
@@ -197,6 +197,7 @@ const CreateRFQ = () => {
                   onChange={handleChange}
                   placeholder="e.g., 456 Delivery Ave, City"
                   style={inputStyle}
+                  className="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-[#4F46E5] transition-all"
                 />
               </div>
             </div>

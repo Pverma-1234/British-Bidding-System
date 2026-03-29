@@ -42,6 +42,7 @@ const RFQDetails = () => {
     const [activityLogs, setActivityLogs] = useState([]);
 
     const [showEndModal, setShowEndModal] = useState(false);
+    const [shake, setShake] = useState(false);
   
   const fetchData = async () => {
       try {
@@ -111,6 +112,8 @@ const RFQDetails = () => {
       const now = new Date().getTime();
       const start = new Date(rfq.startTime).getTime();
       if (now < start) {
+        setShake(true);
+        setTimeout(() => setShake(false), 400);
         toast.error("You can only apply when bidding starts");
         return;
       }
@@ -518,11 +521,21 @@ const RFQDetails = () => {
 
                       <button
                         type="submit"
-                        disabled={submitting || isUpcoming}
-                        style={{ backgroundColor: '#4F46E5', color: 'white' }}
-                        className={`w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-lg text-[11px] font-semibold tracking-widest uppercase transition-colors ${isUpcoming ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#4338CA] disabled:opacity-50 disabled:cursor-not-allowed'}`}
+                        disabled={submitting}
+                        onClick={(e) => {
+                          if (isUpcoming) {
+                             e.preventDefault();
+                             setShake(true);
+                             setTimeout(() => setShake(false), 400);
+                             toast.error("You can only apply when bidding starts");
+                          }
+                        }}
+                        style={{ backgroundColor: isUpcoming ? '#EEF2FF' : '#4F46E5', color: isUpcoming ? '#4F46E5' : 'white' }}
+                        className={`w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-lg text-[11px] font-semibold tracking-widest uppercase transition-all ${shake ? 'translate-x-1 border-red-500' : ''} ${isUpcoming ? 'opacity-50 cursor-not-allowed border border-[#4F46E5]' : 'hover:bg-[#4338CA] disabled:opacity-50 disabled:cursor-not-allowed'}`}
                       >
-                        {submitting
+                        {isUpcoming 
+                          ? <><Clock className="w-3.5 h-3.5" /> Starts Soon</>
+                          : submitting
                             ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing…</>
                             : <><Send className="w-3.5 h-3.5" /> Submit Quotation</>
                         }
