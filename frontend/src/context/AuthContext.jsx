@@ -18,6 +18,31 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [token]);
 
+  useEffect(() => {
+    import('../services/socket').then(({ default: socket, connectSocket }) => {
+        if (user) {
+            connectSocket();
+            socket.emit('identify', user.id);
+            
+            const handleAward = (data) => {
+                import('react-hot-toast').then(({ toast }) => {
+                    if (data.winnerId === user.id) {
+                        toast.success(`🎉 Your bid has been accepted for ${data.rfqName}!`);
+                    } else {
+                        toast(`Auction closed. Another bidder was selected for ${data.rfqName}.`, { icon: 'ℹ️' });
+                    }
+                });
+            };
+
+            socket.on('BID_AWARDED', handleAward);
+            
+            return () => {
+                socket.off('BID_AWARDED', handleAward);
+            };
+        }
+    });
+  }, [user]);
+
   const login = async (email, password) => {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
       method: 'POST',

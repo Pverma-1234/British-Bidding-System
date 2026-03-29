@@ -36,9 +36,18 @@ export const rfqService = {
   createRFQ: (data) => fetchWithAuth('/rfq', { method: 'POST', body: JSON.stringify(data) }),
   getAllRFQs: () => fetchWithAuth('/rfq', { method: 'GET' }),
   getRFQById: (id) => fetchWithAuth(`/rfq/${id}`, { method: 'GET' }),
+  updateRFQ: (id, data) => fetchWithAuth(`/rfq/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteRFQ: (id) => fetchWithAuth(`/rfq/${id}`, { method: 'DELETE' }),
+  endRFQEarly: (id) => fetchWithAuth(`/rfq/${id}/end-early`, { method: 'POST' }),
+  awardBid: (id, bidderId) => fetchWithAuth(`/rfq/${id}/award`, { method: 'POST', body: JSON.stringify({ bidderId }) }),
+  getActivityLogs: (id) => fetchWithAuth(`/rfq/${id}/logs`, { method: 'GET' }),
 };
 
 export const bidService = {
   placeBid: (rfqId, data) => fetchWithAuth(`/bid/${rfqId}`, { method: 'POST', body: JSON.stringify(data) }),
   getBidsByRFQ: (rfqId) => fetchWithAuth(`/bid/${rfqId}`, { method: 'GET' }),
+};
+
+export const analyticsService = {
+  getRFQMetrics: () => fetchWithAuth('/analytics/rfq-metrics', { method: 'GET' }),
 };

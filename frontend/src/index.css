@@ -6,8 +6,37 @@
   font-weight: 400;
 
   color-scheme: light;
-  color: #111827;
-  background-color: #F9FAFB;
+  
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #6366f1;
+  --border: #e2e8f0;
+
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+
+  --l1-bg: #ecfdf5;
+  --l1-border-left: #10b981;
+  --l1-badge-bg: #d1fae5;
+  --l1-badge-text: #065f46;
+  --l1-badge-border: #10b981;
+
+  --status-live-bg: #d1fae5;
+  --status-live-text: #065f46;
+  --status-awarded-bg: #fef08a;
+  --status-awarded-text: #854d0e;
+  --status-ended-bg: #fee2e2;
+  --status-ended-text: #b91c1c;
+  --status-upcoming-bg: #fef3c7;
+  --status-upcoming-text: #d97706;
+
+  color: var(--text);
+  background-color: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,12 +44,48 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root.dark {
+  color-scheme: dark;
+  --bg: #020617;
+  --card: #0f172a;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --primary: #818cf8;
+  --border: #1e293b;
+
+  --bg-primary: #020617;
+  --bg-secondary: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: #1e293b;
+
+  --l1-bg: rgba(16, 185, 129, 0.1);
+  --l1-border-left: #34d399;
+  --l1-badge-bg: rgba(16, 185, 129, 0.2);
+  --l1-badge-text: #6ee7b7;
+  --l1-badge-border: #059669;
+
+  --status-live-bg: rgba(16, 185, 129, 0.2);
+  --status-live-text: #6ee7b7;
+  --status-awarded-bg: rgba(234, 179, 8, 0.2);
+  --status-awarded-text: #fde047;
+  --status-ended-bg: rgba(239, 68, 68, 0.2);
+  --status-ended-text: #fca5a5;
+  --status-upcoming-bg: rgba(245, 158, 11, 0.2);
+  --status-upcoming-text: #fcd34d;
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
 body {
   margin: 0;
   display: flex;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #F9FAFB;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 #root {
@@ -40,4 +105,17 @@ body {
 #nprogress .spinner-icon {
   border-top-color: #4F46E5 !important;
   border-left-color: #4F46E5 !important;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.badge-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }

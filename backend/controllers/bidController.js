@@ -15,11 +15,11 @@ exports.placeBid = async (req, res) => {
         if (!rfq) return res.status(404).json({ message: 'RFQ not found' });
         
         const now = new Date();
-        const bidCloseTime = new Date(rfq.bidCloseTime);
-        const forcedCloseTime = new Date(rfq.forcedCloseTime);
+        const endTime = new Date(rfq.endTime);
+        const maxEndTime = new Date(rfq.maxEndTime);
         
         // Check if auction is active
-        if (now > bidCloseTime || now > forcedCloseTime) {
+        if (now > endTime || now > maxEndTime) {
             return res.status(400).json({ message: 'Auction is closed' });
         }
         
@@ -27,9 +27,6 @@ exports.placeBid = async (req, res) => {
         const totalBidValue = auctionService.calculateTotalBidValue({
             freightCharges, originCharges, destinationCharges
         });
-        
-        // (Optional) Check if bid is valid (e.g. lower than current lowest if required)
-        // For this demo, we'll allow all bids and rank them.
         
         const bid = await Bid.create({
             rfqId,
@@ -51,17 +48,25 @@ exports.placeBid = async (req, res) => {
         });
         
         // Update Ranks
-        const { l1Changed, rankChanged } = await auctionService.updateRanks(rfqId);
+        const { l1Changed, rankChanged, currentLowestBidValue } = await auctionService.updateRanks(rfqId);
         
         // Handle Time Extension
         const wasExtended = await auctionService.handleTimeExtension(rfq, bid, { l1Changed, rankChanged });
         
+        // Update bidHistory and L1 on RFQ Model
+        rfq.bidHistory.push({ bidderId: req.user._id, amount: totalBidValue });
+        if (currentLowestBidValue) rfq.currentLowestBid = currentLowestBidValue;
+        await rfq.save();
+        
         // Emit events via Socket.IO (will be handled in server.js/socket.js)
         if (req.app.get('io')) {
             const io = req.app.get('io');
-            io.to(rfqId).emit('new_bid', { bid, totalBidValue });
+            io.to(rfqId).emit('NEW_BID', { bid, totalBidValue });
             if (rankChanged) io.to(rfqId).emit('rank_update', { rfqId });
-            if (wasExtended) io.to(rfqId).emit('auction_extended', { rfqId, newCloseTime: rfq.bidCloseTime });
+            if (wasExtended) {
+                io.to(rfqId).emit('TIMER_EXTENDED', { rfqId, newCloseTime: rfq.endTime });
+                io.to(rfqId).emit('RFQ_TIMER_UPDATE', { rfqId, endTime: rfq.endTime });
+            }
         }
         
         res.status(201).json({ bid, wasExtended });

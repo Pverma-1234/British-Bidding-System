@@ -35,24 +35,24 @@ const SignupPage = () => {
   };
 
   const inputStyle = {
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "var(--bg-primary)",
     border: '1px solid #E5E7EB',
-    color: '#111827',
+    color: "var(--text-primary)",
     outline: 'none',
   };
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center px-4 py-12" style={{ backgroundColor: '#F9FAFB' }}>
+    <div className="min-h-[90vh] flex items-center justify-center px-4 py-12" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div
-        style={{ backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB' }}
+        style={{ backgroundColor: "var(--bg-secondary)", border: '1px solid #E5E7EB' }}
         className="max-w-xl w-full rounded-3xl shadow-xl overflow-hidden p-8 sm:p-12"
       >
         <div className="text-center mb-10">
           <div style={{ backgroundColor: '#4F46E5' }} className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <UserPlus className="w-6 h-6 text-white" />
           </div>
-          <h1 style={{ color: '#111827' }} className="text-2xl font-black uppercase tracking-wider">Join RFQ Auction</h1>
-          <p style={{ color: '#6B7280' }} className="mt-2">Create an account to start bidding or posting RFQs.</p>
+          <h1 style={{ color: "var(--text-primary)" }} className="text-2xl font-black uppercase tracking-wider">Join RFQ Auction</h1>
+          <p style={{ color: "var(--text-secondary)" }} className="mt-2">Create an account to start bidding or posting RFQs.</p>
         </div>
 
         {error && (
@@ -68,9 +68,9 @@ const SignupPage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label style={{ color: '#6B7280' }} className="text-xs font-bold uppercase tracking-wider ml-1">Full Name</label>
+              <label style={{ color: "var(--text-secondary)" }} className="text-xs font-bold uppercase tracking-wider ml-1">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#6B7280' }} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--text-secondary)" }} />
                 <input
                   type="text"
                   name="name"
@@ -85,9 +85,9 @@ const SignupPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label style={{ color: '#6B7280' }} className="text-xs font-bold uppercase tracking-wider ml-1">Email Address</label>
+              <label style={{ color: "var(--text-secondary)" }} className="text-xs font-bold uppercase tracking-wider ml-1">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#6B7280' }} />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--text-secondary)" }} />
                 <input
                   type="email"
                   name="email"
@@ -103,9 +103,9 @@ const SignupPage = () => {
           </div>
 
           <div className="space-y-2">
-            <label style={{ color: '#6B7280' }} className="text-xs font-bold uppercase tracking-wider ml-1">Password</label>
+            <label style={{ color: "var(--text-secondary)" }} className="text-xs font-bold uppercase tracking-wider ml-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#6B7280' }} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--text-secondary)" }} />
               <input
                 type="password"
                 name="password"
@@ -120,12 +120,12 @@ const SignupPage = () => {
           </div>
 
           <div className="space-y-3">
-            <label style={{ color: '#6B7280' }} className="text-xs font-bold uppercase tracking-wider ml-1">Choose Your Role</label>
+            <label style={{ color: "var(--text-secondary)" }} className="text-xs font-bold uppercase tracking-wider ml-1">Choose Your Role</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label
                 style={{
                   border: formData.role === 'BIDDER' ? '2px solid #4F46E5' : '2px solid #E5E7EB',
-                  backgroundColor: formData.role === 'BIDDER' ? '#EEF2FF' : '#FFFFFF',
+                  backgroundColor: formData.role === 'BIDDER' ? '#EEF2FF' : "var(--bg-secondary)",
                 }}
                 className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
               >
@@ -139,15 +139,15 @@ const SignupPage = () => {
                   style={{ accentColor: '#4F46E5' }}
                 />
                 <div className="flex flex-col">
-                  <span style={{ color: '#111827' }} className="text-sm font-black uppercase tracking-wide">Bidder</span>
-                  <span style={{ color: '#6B7280' }} className="text-xs uppercase tracking-tighter">Place bids on RFQs</span>
+                  <span style={{ color: "var(--text-primary)" }} className="text-sm font-black uppercase tracking-wide">Bidder</span>
+                  <span style={{ color: "var(--text-secondary)" }} className="text-xs uppercase tracking-tighter">Place bids on RFQs</span>
                 </div>
               </label>
 
               <label
                 style={{
                   border: formData.role === 'BUYER' ? '2px solid #4F46E5' : '2px solid #E5E7EB',
-                  backgroundColor: formData.role === 'BUYER' ? '#EEF2FF' : '#FFFFFF',
+                  backgroundColor: formData.role === 'BUYER' ? '#EEF2FF' : "var(--bg-secondary)",
                 }}
                 className="flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all"
               >
@@ -161,8 +161,8 @@ const SignupPage = () => {
                   style={{ accentColor: '#4F46E5' }}
                 />
                 <div className="flex flex-col">
-                  <span style={{ color: '#111827' }} className="text-sm font-black uppercase tracking-wide">Buyer</span>
-                  <span style={{ color: '#6B7280' }} className="text-xs uppercase tracking-tighter">Create & Manage RFQs</span>
+                  <span style={{ color: "var(--text-primary)" }} className="text-sm font-black uppercase tracking-wide">Buyer</span>
+                  <span style={{ color: "var(--text-secondary)" }} className="text-xs uppercase tracking-tighter">Create & Manage RFQs</span>
                 </div>
               </label>
             </div>
@@ -178,7 +178,7 @@ const SignupPage = () => {
           </button>
         </form>
 
-        <p className="text-center mt-8 text-sm font-medium" style={{ color: '#6B7280' }}>
+        <p className="text-center mt-8 text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
           Already a member?{' '}
           <Link to="/login" style={{ color: '#4F46E5' }} className="font-black hover:underline">
             Login here

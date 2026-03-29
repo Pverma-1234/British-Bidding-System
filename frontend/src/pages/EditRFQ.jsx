@@ -1,25 +1,62 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { rfqService } from '../services/api';
 import { Save, ArrowLeft, Clock, Zap, ShieldAlert, PackagePlus, CalendarCheck } from 'lucide-react';
 import { addMinutes, format } from 'date-fns';
+import toast from 'react-hot-toast';
 
-const CreateRFQ = () => {
+const EditRFQ = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
-    startTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-    endTime: format(addMinutes(new Date(), 30), "yyyy-MM-dd'T'HH:mm"),
-    maxEndTime: format(addMinutes(new Date(), 60), "yyyy-MM-dd'T'HH:mm"),
+    startTime: '',
+    endTime: '',
+    maxEndTime: '',
     triggerWindow: 5,
     extensionDuration: 2,
     extensionTriggerType: 'ANY_BID',
     pickupLocation: '',
     dropLocation: '',
-    serviceDate: format(new Date(), "yyyy-MM-dd"),
+    serviceDate: '',
   });
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchRFQ = async () => {
+      try {
+        const res = await rfqService.getRFQById(id);
+        const { rfq } = res;
+        
+        if (new Date() >= new Date(rfq.startTime)) {
+            toast.error("Cannot edit RFQ after it has started");
+            navigate('/');
+            return;
+        }
+
+        setFormData({
+            name: rfq.name,
+            startTime: format(new Date(rfq.startTime), "yyyy-MM-dd'T'HH:mm"),
+            endTime: format(new Date(rfq.endTime), "yyyy-MM-dd'T'HH:mm"),
+            maxEndTime: format(new Date(rfq.maxEndTime), "yyyy-MM-dd'T'HH:mm"),
+            triggerWindow: rfq.triggerWindow,
+            extensionDuration: rfq.extensionDuration,
+            extensionTriggerType: rfq.extensionTriggerType,
+            pickupLocation: rfq.pickupLocation || '',
+            dropLocation: rfq.dropLocation || '',
+            serviceDate: rfq.serviceDate ? format(new Date(rfq.serviceDate), "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd"),
+        });
+      } catch (err) {
+        toast.error('Failed to load RFQ');
+        navigate('/');
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchRFQ();
+  }, [id, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,11 +96,12 @@ const CreateRFQ = () => {
 
     setLoading(true);
     try {
-      await rfqService.createRFQ(formData);
-      navigate('/');
+      await rfqService.updateRFQ(id, formData);
+      toast.success('RFQ updated successfully');
+      navigate(`/rfq/${id}`);
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Error creating RFQ');
+      setError(err.message || 'Error updating RFQ');
     } finally {
       setLoading(false);
     }
@@ -94,8 +132,8 @@ const CreateRFQ = () => {
               <PackagePlus className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 style={{ color: "var(--text-primary)" }} className="text-2xl font-bold">Create New RFQ</h1>
-              <p style={{ color: "var(--text-secondary)" }} className="text-sm">Configure auction rules and extension logic.</p>
+              <h1 style={{ color: "var(--text-primary)" }} className="text-2xl font-bold">Edit RFQ</h1>
+              <p style={{ color: "var(--text-secondary)" }} className="text-sm">Update auction rules and extension logic before it starts.</p>
             </div>
           </div>
         </div>
@@ -297,7 +335,7 @@ const CreateRFQ = () => {
               className="flex items-center gap-2 px-8 py-4 rounded-xl text-white hover:bg-[#4338CA] font-bold disabled:opacity-50 transition-all active:scale-95 shadow-sm"
             >
               <Save className="w-5 h-5" />
-              {loading ? 'Creating...' : 'Launch Auction'}
+              {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>
@@ -306,4 +344,4 @@ const CreateRFQ = () => {
   );
 };
 
-export default CreateRFQ;
+export default EditRFQ;

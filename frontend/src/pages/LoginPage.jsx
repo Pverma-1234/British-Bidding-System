@@ -26,10 +26,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4" style={{ backgroundColor: '#F9FAFB' }}>
+    <div className="min-h-[80vh] flex items-center justify-center px-4" style={{ backgroundColor: "var(--bg-primary)" }}>
       <div
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: "var(--bg-secondary)",
           border: '1px solid #E5E7EB',
         }}
         className="max-w-md w-full rounded-3xl shadow-xl overflow-hidden p-8"
@@ -38,8 +38,8 @@ const LoginPage = () => {
           <div style={{ backgroundColor: '#4F46E5' }} className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <LogIn className="w-6 h-6 text-white" />
           </div>
-          <h1 style={{ color: '#111827' }} className="text-2xl font-black">Welcome Back</h1>
-          <p style={{ color: '#6B7280' }} className="mt-2">Login to manage your RFQs and bids.</p>
+          <h1 style={{ color: "var(--text-primary)" }} className="text-2xl font-black">Welcome Back</h1>
+          <p style={{ color: "var(--text-secondary)" }} className="mt-2">Login to manage your RFQs and bids.</p>
         </div>
 
         {error && (
@@ -54,18 +54,18 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label style={{ color: '#6B7280' }} className="text-xs font-bold uppercase tracking-wider ml-1">Email Address</label>
+            <label style={{ color: "var(--text-secondary)" }} className="text-xs font-bold uppercase tracking-wider ml-1">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#6B7280' }} />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--text-secondary)" }} />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{
-                  backgroundColor: '#F9FAFB',
+                  backgroundColor: "var(--bg-primary)",
                   border: '1px solid #E5E7EB',
-                  color: '#111827',
+                  color: "var(--text-primary)",
                   outline: 'none',
                 }}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl focus:ring-2 focus:ring-[#4F46E5] transition-all"
@@ -75,18 +75,18 @@ const LoginPage = () => {
           </div>
 
           <div className="space-y-2">
-            <label style={{ color: '#6B7280' }} className="text-xs font-bold uppercase tracking-wider ml-1">Password</label>
+            <label style={{ color: "var(--text-secondary)" }} className="text-xs font-bold uppercase tracking-wider ml-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#6B7280' }} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: "var(--text-secondary)" }} />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{
-                  backgroundColor: '#F9FAFB',
+                  backgroundColor: "var(--bg-primary)",
                   border: '1px solid #E5E7EB',
-                  color: '#111827',
+                  color: "var(--text-primary)",
                   outline: 'none',
                 }}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl focus:ring-2 focus:ring-[#4F46E5] transition-all"
@@ -105,7 +105,7 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <p className="text-center mt-8 text-sm" style={{ color: '#6B7280' }}>
+        <p className="text-center mt-8 text-sm" style={{ color: "var(--text-secondary)" }}>
           Don't have an account?{' '}
           <Link to="/signup" style={{ color: '#4F46E5' }} className="font-bold hover:underline">
             Create one

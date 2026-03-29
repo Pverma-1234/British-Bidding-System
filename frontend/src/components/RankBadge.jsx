@@ -2,9 +2,9 @@ import React from 'react';
 import { Medal } from 'lucide-react';
 
 const RankBadge = ({ rank }) => {
-  if (!rank) return <span style={{ color: '#6B7280' }}>-</span>;
+  if (!rank) return <span style={{ color: "var(--text-secondary)" }}>-</span>;
 
-  let badgeStyle = { backgroundColor: '#F9FAFB', color: '#6B7280' };
+  let badgeStyle = { backgroundColor: "var(--bg-primary)", color: "var(--text-secondary)" };
   let icon = null;
 
   if (rank === 1) {
@@ -16,7 +16,7 @@ const RankBadge = ({ rank }) => {
     };
     icon = <Medal className="w-4 h-4" />;
   } else if (rank === 2) {
-    badgeStyle = { backgroundColor: '#F3F4F6', color: '#111827' };
+    badgeStyle = { backgroundColor: '#F3F4F6', color: "var(--text-primary)" };
   } else if (rank === 3) {
     badgeStyle = { backgroundColor: '#FEF3C7', color: '#F59E0B' };
   }

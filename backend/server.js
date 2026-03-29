@@ -8,6 +8,7 @@ const { Server } = require('socket.io');
 const rfqRoutes = require('./routes/rfqRoutes');
 const bidRoutes = require('./routes/bidRoutes');
 const authRoutes = require('./routes/authRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -34,6 +35,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/rfq_auction
 app.use('/api/auth', authRoutes);
 app.use('/api/rfq', rfqRoutes);
 app.use('/api/bid', bidRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Socket.IO Logic
 io.on('connection', (socket) => {
@@ -42,6 +44,11 @@ io.on('connection', (socket) => {
     socket.on('join_rfq', (rfqId) => {
         socket.join(rfqId);
         console.log(`User ${socket.id} joined room: ${rfqId}`);
+    });
+
+    socket.on('identify', (userId) => {
+        socket.join(userId);
+        console.log(`User ${socket.id} identified as user: ${userId}`);
     });
     
     socket.on('disconnect', () => {

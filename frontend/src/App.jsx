@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import CreateRFQ from './pages/CreateRFQ';
+import EditRFQ from './pages/EditRFQ';
 import RFQDetails from './pages/RFQDetails';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -16,7 +17,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen" style={{ backgroundColor: '#F9FAFB' }}>
+        <div className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)" }}>
           <TopLoader />
           <Toaster position="top-center" toastOptions={{ duration: 4000, style: { fontSize: '14px', borderRadius: '8px' } }} />
           <Navbar />
@@ -40,6 +41,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['BUYER']}>
                     <CreateRFQ />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/edit/:id" 
+                element={
+                  <ProtectedRoute allowedRoles={['BUYER']}>
+                    <EditRFQ />
                   </ProtectedRoute>
                 } 
               />

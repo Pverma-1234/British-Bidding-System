@@ -19,9 +19,14 @@ const updateRanks = async (rfqId) => {
     
     let l1Changed = false;
     let rankChanged = false;
+    let currentLowestBidValue = null;
     
     for (let i = 0; i < bids.length; i++) {
         const newRank = i + 1;
+        if (newRank === 1) {
+            currentLowestBidValue = bids[i].totalBidValue;
+        }
+
         if (bids[i].rank !== newRank) {
             if (newRank === 1) l1Changed = true;
             rankChanged = true;
@@ -30,7 +35,7 @@ const updateRanks = async (rfqId) => {
         }
     }
     
-    return { l1Changed, rankChanged };
+    return { l1Changed, rankChanged, currentLowestBidValue };
 };
 
 /**
@@ -39,13 +44,26 @@ const updateRanks = async (rfqId) => {
 const handleTimeExtension = async (rfq, bid, changes) => {
     const { l1Changed, rankChanged } = changes;
     const now = new Date();
-    const bidCloseTime = new Date(rfq.bidCloseTime);
+    const endTime = new Date(rfq.endTime);
     const triggerWindowMs = rfq.triggerWindow * 60 * 1000;
     
-    // Check if we are within the trigger window
-    const timeRemaining = bidCloseTime.getTime() - now.getTime();
+    // Calculate the start time of the current trigger window
+    const triggerWindowStartTime = new Date(endTime.getTime() - triggerWindowMs);
+    
+    // Automatically reset extensionUsedInWindow if we have entered a new trigger window 
+    // and the last extension happened before this window started
+    if (rfq.extensionUsedInWindow && rfq.lastExtensionTime && rfq.lastExtensionTime < triggerWindowStartTime) {
+        rfq.extensionUsedInWindow = false;
+    }
+
+    const timeRemaining = endTime.getTime() - now.getTime();
     
     if (timeRemaining > 0 && timeRemaining <= triggerWindowMs) {
+        // If extension already used in this specific window, ignore
+        if (rfq.extensionUsedInWindow) {
+            return false;
+        }
+
         let shouldExtend = false;
         
         switch (rfq.extensionTriggerType) {
@@ -61,28 +79,34 @@ const handleTimeExtension = async (rfq, bid, changes) => {
         }
         
         if (shouldExtend) {
-            let newCloseTime = new Date(bidCloseTime.getTime() + rfq.extensionDuration * 60 * 1000);
-            const forcedCloseTime = new Date(rfq.forcedCloseTime);
+            let newEndTime = new Date(endTime.getTime() + rfq.extensionDuration * 60 * 1000);
+            const maxEndTime = new Date(rfq.maxEndTime);
             
-            // Cap to forcedCloseTime
-            if (newCloseTime > forcedCloseTime) {
-                newCloseTime = forcedCloseTime;
+            // Cap to maxEndTime
+            if (newEndTime > maxEndTime) {
+                newEndTime = maxEndTime;
             }
             
-            if (newCloseTime > bidCloseTime) {
-                rfq.bidCloseTime = newCloseTime;
+            if (newEndTime > endTime) {
+                rfq.endTime = newEndTime;
+                rfq.extensionUsedInWindow = true;
+                rfq.lastExtensionTime = now;
                 await rfq.save();
                 
                 await ActivityLog.create({
                     rfqId: rfq._id,
                     type: 'AUCTION_EXTENDED',
-                    message: `Auction extended to ${newCloseTime.toISOString()} due to ${rfq.extensionTriggerType}`,
-                    details: { newCloseTime, triggerType: rfq.extensionTriggerType }
+                    message: `Auction extended to ${newEndTime.toISOString()} due to ${rfq.extensionTriggerType}`,
+                    details: { newEndTime, triggerType: rfq.extensionTriggerType }
                 });
                 
                 return true;
             }
         }
+    } else if (timeRemaining > triggerWindowMs && rfq.extensionUsedInWindow) {
+        // Reset if we are outside the trigger window (e.g. before it starts)
+        rfq.extensionUsedInWindow = false;
+        await rfq.save();
     }
     
     return false;
