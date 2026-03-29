@@ -17,8 +17,19 @@ exports.placeBid = async (req, res) => {
         const now = new Date();
         const endTime = new Date(rfq.endTime);
         const maxEndTime = new Date(rfq.maxEndTime);
+        const startTime = new Date(rfq.startTime);
         
-        // Check if auction is active
+        if (now >= startTime && now < endTime) {
+            rfq.status = 'LIVE';
+            // await rfq.save(); // Avoid unnecessary concurrent saves since we save at the end, but state is updated in memory for the next line
+        }
+
+        // Check if auction is upcoming or not live
+        if (Date.now() < new Date(rfq.startTime).getTime() || rfq.status !== 'LIVE') {
+            return res.status(400).json({ message: 'Bidding is not allowed before auction starts' });
+        }
+        
+        // Check if auction is closed
         if (now > endTime || now > maxEndTime) {
             return res.status(400).json({ message: 'Auction is closed' });
         }

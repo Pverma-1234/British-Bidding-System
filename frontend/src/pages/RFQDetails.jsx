@@ -14,6 +14,16 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 
+const formatDateTime = (date) => {
+  return new Date(date).toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 const RFQDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -97,6 +107,14 @@ const RFQDetails = () => {
 
     const handleBidSubmit = async (e) => {
       e.preventDefault();
+
+      const now = new Date().getTime();
+      const start = new Date(rfq.startTime).getTime();
+      if (now < start) {
+        toast.error("You can only apply when bidding starts");
+        return;
+      }
+
       setSubmitting(true);
 
       const previousBids = [...bids];
@@ -138,7 +156,7 @@ const RFQDetails = () => {
     const start = new Date(rfq.startTime).getTime();
     const end = new Date(rfq.endTime).getTime();
     
-    const isCreator = user && (user.id === rfq.createdBy?._id || user.id === rfq.createdBy);
+    const isCreator = user && user.role?.toLowerCase() === 'buyer' && (user.id === rfq.createdBy?._id || user.id === rfq.createdBy);
 
     let displayStatus = 'LIVE 🟢';
     let statusColor = { bg: 'var(--status-live-bg)', text: 'var(--status-live-text)' };
@@ -156,6 +174,7 @@ const RFQDetails = () => {
 
     const isClosed = rfq.status === 'AWARDED' || rfq.status === 'ENDED' || rfq.endedEarly || now >= end;
     const isLive = !isClosed && now >= start;
+    const isUpcoming = now < start;
 
     const endAuctionEarly = async () => {
       try {
@@ -169,6 +188,10 @@ const RFQDetails = () => {
     };
 
     const handleDelete = async () => {
+      console.log("User Role:", user?.role);
+      console.log("User ID:", user?._id || user?.id);
+      console.log("RFQ Owner:", rfq?.createdBy?._id || rfq?.createdBy);
+
       if (!window.confirm("Are you sure you want to delete this RFQ?")) return;
       try {
         await rfqService.deleteRFQ(id);
@@ -215,7 +238,7 @@ const RFQDetails = () => {
       { label: 'Extension Trigger', value: rfq.extensionTriggerType },
       { label: 'Trigger Window', value: `${rfq.triggerWindow} min` },
       { label: 'Extension Duration', value: `+${rfq.extensionDuration} min` },
-      { label: 'Hard Deadline', value: new Date(rfq.maxEndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), accent: true },
+      { label: 'Hard Deadline', value: formatDateTime(rfq.maxEndTime), accent: true },
     ];
 
     return (
@@ -292,8 +315,8 @@ const RFQDetails = () => {
                       <Clock className="w-4 h-4" />
                     </div>
                     <div>
-                      <p style={{ color: '#1E3A8A' }} className="text-xs font-bold uppercase tracking-wider mb-0.5">Auction Ends</p>
-                      <span style={{ color: "var(--text-secondary)" }} className="font-mono text-[10px] tracking-widest uppercase">{displayStatus}</span>
+                      <p style={{ color: '#1E3A8A' }} className="text-xs font-bold uppercase tracking-wider mb-0.5">Ends on</p>
+                      <span style={{ color: "var(--text-secondary)" }} className="font-mono text-[10px] tracking-widest uppercase">{formatDateTime(rfq.endTime)}</span>
                     </div>
                   </div>
                   <CountdownTimer rfq={rfq} />
@@ -344,6 +367,12 @@ const RFQDetails = () => {
                 <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden' }}>
                   <BidTable bids={bids} isCreator={isCreator} isClosed={isClosed} rfq={rfq} setRfq={setRfq} />
                 </div>
+              </div>
+
+              <div className="text-right pt-6">
+                <p style={{ color: "var(--text-secondary)" }} className="text-[11px] font-semibold tracking-wide uppercase">
+                  RFQ Initiated by <span style={{ color: "var(--text-primary)" }}>{rfq.createdBy?.name || 'Unknown Buyer'}</span>
+                </p>
               </div>
 
             </div>
@@ -410,6 +439,7 @@ const RFQDetails = () => {
                           value={bidForm.freightCharges}
                           onChange={handleInputChange}
                           placeholder="0.00"
+                          disabled={isUpcoming}
                           onFocus={e => e.target.style.borderColor = '#4F46E5'}
                           onBlur={e => e.target.style.borderColor = "var(--border-color)"}
                         />
@@ -426,6 +456,7 @@ const RFQDetails = () => {
                             value={bidForm.originCharges}
                             onChange={handleInputChange}
                             placeholder="0.00"
+                            disabled={isUpcoming}
                             onFocus={e => e.target.style.borderColor = '#4F46E5'}
                             onBlur={e => e.target.style.borderColor = "var(--border-color)"}
                           />
@@ -440,6 +471,7 @@ const RFQDetails = () => {
                             value={bidForm.destinationCharges}
                             onChange={handleInputChange}
                             placeholder="0.00"
+                            disabled={isUpcoming}
                             onFocus={e => e.target.style.borderColor = '#4F46E5'}
                             onBlur={e => e.target.style.borderColor = "var(--border-color)"}
                           />
@@ -461,6 +493,7 @@ const RFQDetails = () => {
                             value={bidForm.transitTime}
                             onChange={handleInputChange}
                             placeholder="—"
+                            disabled={isUpcoming}
                             onFocus={e => e.target.style.borderColor = '#4F46E5'}
                             onBlur={e => e.target.style.borderColor = "var(--border-color)"}
                           />
@@ -476,6 +509,7 @@ const RFQDetails = () => {
                             required
                             value={bidForm.quoteValidity}
                             onChange={handleInputChange}
+                            disabled={isUpcoming}
                             onFocus={e => e.target.style.borderColor = '#4F46E5'}
                             onBlur={e => e.target.style.borderColor = "var(--border-color)"}
                           />
@@ -484,13 +518,13 @@ const RFQDetails = () => {
 
                       <button
                         type="submit"
-                        disabled={submitting}
-                        style={{ backgroundColor: '#4F46E5' }}
-                        className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed text-[11px] font-semibold tracking-widest uppercase hover:bg-[#4338CA] transition-colors"
+                        disabled={submitting || isUpcoming}
+                        style={{ backgroundColor: '#4F46E5', color: 'white' }}
+                        className={`w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-lg text-[11px] font-semibold tracking-widest uppercase transition-colors ${isUpcoming ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#4338CA] disabled:opacity-50 disabled:cursor-not-allowed'}`}
                       >
                         {submitting
-                          ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing…</>
-                          : <><Send className="w-3.5 h-3.5" /> Submit Quotation</>
+                            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing…</>
+                            : <><Send className="w-3.5 h-3.5" /> Submit Quotation</>
                         }
                       </button>
 

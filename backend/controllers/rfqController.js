@@ -179,8 +179,12 @@ exports.deleteRFQ = async (req, res) => {
         const rfq = await RFQ.findById(req.params.id);
         if (!rfq) return res.status(404).json({ message: 'RFQ not found' });
         
+        if (req.user.role?.toLowerCase() !== 'buyer') {
+            return res.status(403).json({ message: 'Only buyers can delete RFQs' });
+        }
+        
         if (rfq.createdBy.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ message: 'Not authorized to delete this RFQ' });
+            return res.status(403).json({ message: 'You can only delete your own RFQ' });
         }
         
         if (rfq.status === 'AWARDED') {

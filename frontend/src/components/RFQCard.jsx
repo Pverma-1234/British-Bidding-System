@@ -91,7 +91,7 @@ const RFQCard = ({ rfq, onDeleteSuccess }) => {
               Hard Deadline <ShieldAlert className="w-3 h-3 text-red-400" />
             </p>
             <p className="font-mono text-sm font-bold text-gray-800">
-              {format(new Date(rfq.maxEndTime), 'HH:mm')}
+              {format(new Date(rfq.maxEndTime), 'hh:mm a')}
             </p>
           </div>
         </div>

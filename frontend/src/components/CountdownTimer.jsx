@@ -28,6 +28,7 @@ const calculateRemainingTime = (endTime) => {
 const CountdownTimer = ({ rfq }) => {
   const [timeLeft, setTimeLeft] = useState('');
   const [isExpired, setIsExpired] = useState(false);
+  const [isNear, setIsNear] = useState(false);
   const [flash, setFlash] = useState(false);
 
   useEffect(() => {
@@ -55,7 +56,9 @@ const CountdownTimer = ({ rfq }) => {
 
       if (now < start) {
         setIsExpired(false);
-        setTimeLeft('Starts Soon');
+        const diff = calculateRemainingTime(rfq.startTime);
+        setIsNear(diff > 0 && diff < 300000); // under 5 minutes
+        setTimeLeft(diff > 0 ? `Starts in: ${formatTime(diff)}` : 'Starts Soon');
         return;
       }
 
@@ -68,6 +71,7 @@ const CountdownTimer = ({ rfq }) => {
       }
 
       setIsExpired(false);
+      setIsNear(diff < 300000); // under 5 minutes
       setTimeLeft(`Closing in: ${formatTime(diff)}`);
     };
 
@@ -83,18 +87,20 @@ const CountdownTimer = ({ rfq }) => {
 
   if (!rfq) return null;
 
+  const isRed = isExpired || isNear;
+
   return (
     <div
       style={{
-        backgroundColor: isExpired ? '#FEE2E2' : '#EEF2FF',
-        color: isExpired ? '#EF4444' : '#4F46E5',
+        backgroundColor: isRed ? '#FEE2E2' : '#EEF2FF',
+        color: isRed ? '#EF4444' : '#4F46E5',
         transition: 'all 0.3s ease',
         transform: flash ? 'scale(1.05)' : 'scale(1)',
         boxShadow: flash ? '0 0 10px rgba(79, 70, 229, 0.5)' : 'none'
       }}
-      className="badge flex items-center gap-2 font-bold font-mono tracking-widest text-[#4F46E5]"
+      className="badge flex items-center gap-2 font-bold font-mono tracking-widest"
     >
-      <span className="badge-text" style={{ color: isExpired ? '#EF4444' : '#4F46E5' }}>
+      <span className="badge-text" style={{ color: isRed ? '#EF4444' : '#4F46E5' }}>
         <Clock className={`w-3.5 h-3.5 ${flash && !isExpired ? 'animate-spin' : ''}`} />
         {timeLeft}
       </span>

@@ -94,3 +94,8 @@ A high-performance, real-time bidding platform designed to strictly facilitate a
 - Add PDF Generation for printing official Purchase Orders when an RFQ is awarded.
 - Enhance the analytics dashboard with interactive interactive charts mapping bid frequency over time.
 - Implement an audit log export (CSV) feature for prolonged compliance tracking.
+
+## 👨‍💻 Author
+
+**Prince Verma**
+- [GitHub Profile](https://github.com/Pverma-1234)
